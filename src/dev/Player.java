@@ -21,6 +21,7 @@ public class Player extends UnicastRemoteObject implements IPlayer{
 	public static final int SHOW_MATCH_RESULTS = 3;
 	public static final int GAME_OVER = 4;
 	public static final int RESET = 5;
+	public static final int PAUSE = 6;
 	
 	
 	public boolean refreshEnemyBars;
@@ -183,5 +184,12 @@ public class Player extends UnicastRemoteObject implements IPlayer{
 	public void refreshServerIp(String ip) throws RemoteException{
 		serverIp = ip;
 		refreshServerIp = true;
+	}
+	
+	public void startPause() throws RemoteException{
+		gameState = PAUSE;
+	}
+	public void endPause() throws RemoteException{
+		gameState = PLAYING_MATCH;
 	}
 }

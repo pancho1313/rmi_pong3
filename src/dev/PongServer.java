@@ -389,4 +389,34 @@ public class PongServer extends UnicastRemoteObject implements IPongServer{
 		return loadavg[0];//last [0]: 1 / [1]: 5 / [2]: 15 min
 		*/
 	}
+	
+	public void askStartPause() throws RemoteException{
+		if(serverState != PLAYING_MATCH)
+			return;
+		
+		for(int id = 0; id < players.length; id++){
+			IPlayer player = players[id];
+			if(player != null){
+				try {
+					player.startPause();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	public void askEndPause() throws RemoteException{
+		for(int id = 0; id < players.length; id++){
+			IPlayer player = players[id];
+			if(player != null){
+				try {
+					player.endPause();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }

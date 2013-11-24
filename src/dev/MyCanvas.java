@@ -96,6 +96,9 @@ public class MyCanvas extends Canvas {
         case Player.SHOW_MATCH_RESULTS:
         	paintResults(g);
         	break;
+        case Player.PAUSE:
+        	paintPause(g);
+        	break;
         default:
         	blank(g);
         	/*algoDefault();*/
@@ -240,5 +243,22 @@ public class MyCanvas extends Canvas {
 		
 		
 
+	}
+	
+	private void paintPause(Graphics g){
+		//waiting message
+		String waitPlease = "PAUSE";
+		
+		//fondo
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		//texto
+		g.setColor(Color.WHITE);
+		FontMetrics fm = g.getFontMetrics();
+	    fm = g.getFontMetrics();
+	    int w = fm.stringWidth(waitPlease);
+	    int h = fm.getAscent();
+	    g.drawString(waitPlease, (getWidth()/2) - (w / 2), (getHeight()/2) + (h / 4));
 	}
 }

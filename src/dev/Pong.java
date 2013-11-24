@@ -139,6 +139,9 @@ public class Pong implements KeyListener {
 			            	refreshScores();
 			            	/*algo();*/
 			            	break;
+			            case Player.PAUSE:
+			            	/*algo();*/
+			            	break;
 			            default:
 			            	/*algoDefault();*/
 			            	break;
@@ -485,6 +488,7 @@ public class Pong implements KeyListener {
 			if(keysPressed[KeyEvent.VK_Q]){
 				exitGame();
 			}
+			
 			if(myPlayer.getPlayerId() < 2){//izq der
 				if(keysPressed[KeyEvent.VK_UP]){
 					if(myBar.top() - DX >= 0)
@@ -524,6 +528,11 @@ public class Pong implements KeyListener {
 			}
 			if(keyReleased)
 				sendMyBarPos();
+			
+			if(keysReleased[KeyEvent.VK_SPACE]){
+				keysReleased[KeyEvent.VK_SPACE] = false;
+				askStartPause();
+			}
          	/*algo();*/
          	break;
          case Player.GAME_OVER:
@@ -542,6 +551,12 @@ public class Pong implements KeyListener {
         		 oneMoreMatchPlease();
         	 }
          	break;
+          case Player.PAUSE:
+        	  if(keysReleased[KeyEvent.VK_SPACE]){
+        		  keysReleased[KeyEvent.VK_SPACE] = false;
+        		  askEndPause();
+           	 }
+          	break;
          default:
          	/*algoDefault();*/
          	break;
@@ -623,4 +638,27 @@ public class Pong implements KeyListener {
 			 }
 		 }
 	 }
+	 
+	 private void askStartPause(){
+		if(myPlayer.getGameState() != Player.PLAYING_MATCH)
+			return;
+		
+		try {
+			pongServer.askStartPause();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	 private void askEndPause(){
+			if(myPlayer.getGameState() != Player.PAUSE)
+				return;
+			
+			try {
+				pongServer.askEndPause();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 }

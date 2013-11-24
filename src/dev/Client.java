@@ -1,12 +1,9 @@
 package dev;
 
-import java.awt.event.KeyEvent;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.List;
 
 public class Client {
 

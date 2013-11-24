@@ -11,4 +11,6 @@ public interface IPongServer extends Remote {
 	public void recieveServerSettings(int nPlayers, int winScore, int activePlayers, IPlayer[] players, int[] playersScore, int lastPlayerRebound, int serverNextState) throws RemoteException;
 	public void migrate(String newServerIp) throws RemoteException;
 	public double getServerLoad() throws RemoteException;
+	public void askStartPause() throws RemoteException;
+	public void askEndPause() throws RemoteException;
 }
