@@ -150,6 +150,7 @@ public class PongServer extends UnicastRemoteObject implements IPongServer{
 	/**
 	 * para que un player pueda ser publicado por el pongServer
 	 * */
+	/*
 	public void sendPlayer(String pPublicName, IPlayer p) throws RemoteException{
 		try {
 			Naming.rebind(pPublicName, p);
@@ -170,6 +171,7 @@ public class PongServer extends UnicastRemoteObject implements IPongServer{
 			e.printStackTrace();
 		}
 	}
+	*/
 	
 	public boolean iWantToPlay(IPlayer p) throws RemoteException{
 		U.localMessage("<< I want to play :)");

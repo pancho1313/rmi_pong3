@@ -34,7 +34,7 @@ public class Server {
 			clean = true;
 		}
 		if(!clean){
-			U.localMessage("Ups! ya hay un PongServer :s");
+			U.localMessage("Ups! ya hay un PongServer en esta ip :s");
 			return;
 		}
 		
