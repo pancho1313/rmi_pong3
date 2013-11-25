@@ -75,6 +75,7 @@ public class Pong implements KeyListener {
 		frame.setLayout(new BorderLayout());
 		
 		canvas = new MyCanvas(WIDTH, HEIGHT);
+		canvas.addKeyListener(this);
 		frame.add(canvas);
 		frame.pack();
 		
