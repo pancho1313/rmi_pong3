@@ -15,13 +15,13 @@ public class Player extends UnicastRemoteObject implements IPlayer{
 	public boolean runUserWindow;
 	private int id = -1;//TODO: verificar correctitud (el -1 podría servir para debug)
 	
-	public static final int WAITING_NEW_MATCH = 0;
-	public static final int BRACE_YOURSELF = 1;//transitorio, para saludar a los contendientes
-	public static final int PLAYING_MATCH = 2;
-	public static final int SHOW_MATCH_RESULTS = 3;
-	public static final int GAME_OVER = 4;
-	public static final int RESET = 5;
-	public static final int PAUSE = 6;
+	public static final int WAITING_NEW_MATCH = 1;
+	public static final int BRACE_YOURSELF = 2;//transitorio, para saludar a los contendientes
+	public static final int PLAYING_MATCH = 3;
+	public static final int SHOW_MATCH_RESULTS = 4;
+	public static final int GAME_OVER = 5;
+	public static final int RESET = 6;
+	public static final int PAUSE = 7;
 	
 	
 	public boolean refreshEnemyBars;
@@ -35,6 +35,7 @@ public class Player extends UnicastRemoteObject implements IPlayer{
 	public String serverIp;
 	public boolean refreshServerIp;
 	private int gameState;//estado del juego del player
+	private int prePauseGameState;
 	
 	public String sServerIp;
 	
@@ -187,9 +188,16 @@ public class Player extends UnicastRemoteObject implements IPlayer{
 	}
 	
 	public void startPause() throws RemoteException{
-		gameState = PAUSE;
+		if(gameState != PAUSE){
+			prePauseGameState = gameState;
+			gameState = PAUSE;
+		}
 	}
 	public void endPause() throws RemoteException{
-		gameState = PLAYING_MATCH;
+		if(gameState == PAUSE){
+			if(prePauseGameState == 0)
+				U.localMessage("ERROR: prePauseGameState == 0 !!!");
+			gameState = prePauseGameState;
+		}
 	}
 }

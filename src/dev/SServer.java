@@ -10,16 +10,28 @@ import java.util.ArrayList;
 
 public class SServer extends UnicastRemoteObject implements ISServer{
 
+	public static final int OK = 1;
+	public static final int SERVER_DOWN = 2;
+	
+	public int sServerState;//estado del SServer
+	/////////////////////////////////////////////////////////////////////
+	
 	public ArrayList<String> serversIp;
 	public String activeServer;
 	private int nPlayers;
 	private int winScore;
+	private int activePlayers;
+	private IPlayer[] players;
+	private int[] playersScore;
+	private int lastPlayerRebound;
+	private int serverNextState;
 	
 	public boolean refreshServers;
 	
 	static MyUtil U = new MyUtil();
 	
 	public SServer(int numPlayers, int winScore) throws RemoteException{
+		sServerState = OK;
 		serversIp = new ArrayList<String>();
 		refreshServers = false;
 		activeServer = "";
@@ -28,6 +40,11 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public boolean iWantToServe(String ip) throws RemoteException{
+		if(sServerState == SERVER_DOWN && ip.equals(activeServer)){
+			habemusPongServer();
+			U.localMessage("It's ALIVE!!! :D");
+			return true;
+		}
 		boolean youActive = false;
 		U.localMessage("<< ["+ip+"]: deseo servir...");
 		
@@ -53,7 +70,7 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 	
 	public String whoIstheServer() throws RemoteException{
 		U.localMessage("<< whoIstheServer?");
-		if(!activeServer.equals("")){
+		if(sServerState==OK && !activeServer.equals("")){
 			U.localMessage(">> ["+activeServer+"]");
 			return activeServer;
 		}
@@ -63,6 +80,30 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 		
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	private boolean restoreActiveServer(){
+		IPongServer server;
+		
+		//contactar al servidor
+		try {
+			server = (IPongServer) Naming.lookup("//"+activeServer+":1099/PongServer");
+			
+			//enviar parametros al server
+			try {
+				server.recieveServerSettings(nPlayers, winScore, activePlayers, players, playersScore, lastPlayerRebound, serverNextState);
+				return true;
+			} catch (RemoteException e1) {
+				return false;
+			}
+			
+		} catch (MalformedURLException e) {
+			return false;
+		} catch (RemoteException e) {
+			return false;
+		} catch (NotBoundException e) {
+			return false;
+		}
+	}
+	
 	private void setInitialServer(String ipServer){
 		IPongServer server;
 		
@@ -71,13 +112,11 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 			server = (IPongServer) Naming.lookup("//"+ipServer+":1099/PongServer");
 			
 			//crear parametros iniciales del server
-			int nPlayers = this.nPlayers;
-			int winScore = this.winScore;
-			int activePlayers = 0;
-			IPlayer[] players = new IPlayer[4];
-			int[] playersScore = new int[4];
-			int lastPlayerRebound = -1;
-			int serverNextState = PongServer.WAITING_FOR_PLAYERS;
+			activePlayers = 0;
+			players = new IPlayer[4];
+			playersScore = new int[4];
+			lastPlayerRebound = -1;
+			serverNextState = PongServer.WAITING_FOR_PLAYERS;
 			
 			//enviar parametros iniciales al server
 			try {
@@ -100,11 +139,13 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public boolean deadServer(String ip){
+		if(ip.equals(activeServer)){
+			activeServerDown();
+			return false;
+		}
+		
 		if(serversIp.remove(ip)){
-			U.localMessage("ip "+ip+" descartada como server  :,I");
-			if(ip.equals(activeServer)){//TODO!!
-				U.localMessage("ERROR GRAVE: ha fallecido el PongServer Activo!  D:");
-			}
+			U.localMessage("ip "+ip+" descartada como server  :,I");	
 			refreshServers = true;
 			return true;
 		}
@@ -147,5 +188,62 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 		//loop
 		new SSLoop((SServer)sServer);
 	}
+	
+	public void habemusPongServer(){
+		
+		//restaurar estado del Server
+		restoreActiveServer();
+		
+		//restaurar estado de jugadores
+		for(int id = 0; id < players.length; id++){
+			IPlayer player = players[id];
+			if(player != null){
+				try {
+					player.endPause();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		//restaurar el estado de SS
+		sServerState = OK;
+	}
+	
+	private void activeServerDown(){
+		U.localMessage("ERROR GRAVE: ha fallecido el PongServer Activo!  D:");
+		
+		//anunciar el problema
+		sServerState = SERVER_DOWN;
 
+		//avisarle a los clientes
+		for(int id = 0; id < players.length; id++){
+			IPlayer player = players[id];
+			if(player != null){
+				try {
+					player.startPause();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}	
+	}
+
+	public void serverDown() throws RemoteException{
+		activeServerDown();
+	}
+	
+	public void refreshGeneralState(Object[] resp){
+		
+		nPlayers = (Integer) resp[0];
+		winScore = (Integer) resp[1];
+		activePlayers = (Integer) resp[2];
+		players = (IPlayer[]) resp[3];
+		playersScore = (int[]) resp[4];
+		lastPlayerRebound = (Integer) resp[5];
+		serverNextState = (Integer) resp[6];
+		 
+	}
 }

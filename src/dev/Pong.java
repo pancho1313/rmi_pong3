@@ -97,12 +97,15 @@ public class Pong implements KeyListener {
 			new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+			    	exitGame();
+			    	/*
 			    	try {
 						pongServer.iWantToQuit(myPlayer.getPlayerId());
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					*/
 			    }
 		    }
 		);
@@ -207,8 +210,7 @@ public class Pong implements KeyListener {
 		try {
 			pongServer.iWantToQuit(myPlayer.getPlayerId());
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			serverDown();
 		}
 	}
 	
@@ -229,14 +231,11 @@ public class Pong implements KeyListener {
 			try {
 				pongServer = (IPongServer) Naming.lookup("//"+newIp+":1099/PongServer");
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				serverDown();
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				serverDown();
 			} catch (NotBoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				serverDown();
 			}
 		}
 	}
@@ -470,8 +469,7 @@ public class Pong implements KeyListener {
 			try {
 				pongServer.refreshBall(myPlayer.getPlayerId(), missedBall, ball.x, ball.y, ball.vx, ball.vy);
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				serverDown();
 			}
 		}
 
@@ -613,8 +611,7 @@ public class Pong implements KeyListener {
 		 try {
 			pongServer.iMovedMyBar(myPlayer.getPlayerId(), myBar.x, myBar.y);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			serverDown();
 		}
 	 }
 	 
@@ -647,8 +644,7 @@ public class Pong implements KeyListener {
 		try {
 			pongServer.askStartPause();
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			serverDown();
 		}
 	}
 	 private void askEndPause(){
@@ -658,8 +654,26 @@ public class Pong implements KeyListener {
 			try {
 				pongServer.askEndPause();
 			} catch (RemoteException e) {
+				serverDown();
+			}
+		}
+	 
+	private void serverDown(){
+		ISServer sServer;
+		 String ipSServer = myPlayer.sServerIp;
+		//contactar al SServer y obtener la ip del servidor activo
+			try {
+				sServer = (ISServer) Naming.lookup("//"+ipSServer+":1099/SServer");
+				sServer.serverDown();
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NotBoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+	}
 }

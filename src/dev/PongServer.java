@@ -421,4 +421,16 @@ public class PongServer extends UnicastRemoteObject implements IPongServer{
 			}
 		}
 	}
+	
+	public Object[] getPongServerGeneralState() throws RemoteException{
+		Object[] resp = new Object[7];
+		resp[0] = nPlayers;
+		resp[1] = winScore;
+		resp[2] = activePlayers;
+		resp[3] = players;
+		resp[4] = playersScore;
+		resp[5] = lastPlayerRebound;
+		resp[6] = serverState;
+		return resp;
+	}
 }

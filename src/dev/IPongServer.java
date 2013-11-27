@@ -13,4 +13,5 @@ public interface IPongServer extends Remote {
 	public double getServerLoad() throws RemoteException;
 	public void askStartPause() throws RemoteException;
 	public void askEndPause() throws RemoteException;
+	public Object[] getPongServerGeneralState() throws RemoteException;
 }

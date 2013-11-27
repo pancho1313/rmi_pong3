@@ -108,10 +108,17 @@ public class SSLoop implements KeyListener {
 					  String ip = keySetIterator.next();
 					  IPongServer server = servers.get(ip);  
 					  if(server != null){
-						  //TODO: pedirles la carga academica y eventualmente (>0.7) migrar al que tenga menos...
 						  double load = -1;
 						  try {
 							load = server.getServerLoad();
+							if(ip.equals(sServer.activeServer)){
+								// actualizar estado del server activo para respaldo y recuperacion...
+								sServer.refreshGeneralState(server.getPongServerGeneralState());
+								
+								if(sServer.sServerState==SServer.SERVER_DOWN){
+									sServer.habemusPongServer();
+								}
+							}
 						} catch (RemoteException e) {
 							// si no responde (hizo ctrl+c) --> informar su fallecimiento --> deadServer(String ip)
 							if(deadServer(ip)){
@@ -123,7 +130,6 @@ public class SSLoop implements KeyListener {
 						  
 						if(ip.equals(sServer.activeServer)){
 							if(load > 0.7){
-								//TODO: if esiste un inactivo distponible migrate!
 								migrate = true;
 								actualLoad = load;
 							}
