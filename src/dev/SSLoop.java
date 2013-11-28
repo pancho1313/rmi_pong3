@@ -33,6 +33,8 @@ public class SSLoop implements KeyListener {
 	private SServer sServer;
 	private boolean suicide;
 	private HashMap<String,IPongServer> servers;
+	
+	private boolean flags = false;
 
 	private void reset(){
 		keysPressed = new boolean[KeyEvent.KEY_LAST];
@@ -107,24 +109,24 @@ public class SSLoop implements KeyListener {
 					while(keySetIterator.hasNext()){
 					  String ip = keySetIterator.next();
 					  IPongServer server = servers.get(ip);
-					  System.out.println("flag: "+ip);
+					  if(flags)System.out.println("flag: "+ip);
 					  if(server != null){
-						  System.out.println("flag: 1");
+						  if(flags)System.out.println("flag: 1");
 						  double load = -1;
 						  try {
-							  System.out.println("flag: 2");
+							  if(flags)System.out.println("flag: 2");
 							load = server.getServerLoad();
 							if(ip.equals(sServer.activeServer)){
 								// actualizar estado del server activo para respaldo y recuperacion...
 								sServer.refreshGeneralState(server.getPongServerGeneralState());
-								System.out.println("flag: 3");
+								if(flags)System.out.println("flag: 3");
 								if(sServer.sServerState==SServer.SERVER_DOWN){
-									System.out.println("flag: 4");
+									if(flags)System.out.println("flag: 4");
 									sServer.habemusPongServer();
 								}
 							}
 						} catch (RemoteException e) {
-							System.out.println("flag: 5");
+							if(flags)System.out.println("flag: 5");
 							// si no responde (hizo ctrl+c) --> informar su fallecimiento --> deadServer(String ip)
 							if(deadServer(ip)){
 								doContinue = true;
@@ -147,28 +149,28 @@ public class SSLoop implements KeyListener {
 						  info_ip.add(ip);
 						  
 					  }else{
-						  System.out.println("flag: 6");
+						  if(flags)System.out.println("flag: 6");
 						  IPongServer newServer;
 							try {
-								System.out.println("flag: 7");
+								if(flags)System.out.println("flag: 7");
 								newServer = (IPongServer) Naming.lookup("//"+ip+":1099/PongServer");
 								newServer.getServerLoad();
 								servers.put(ip, newServer);
-								System.out.println("flag: 8");
+								if(flags)System.out.println("flag: 8");
 							} catch (MalformedURLException e) {
-								System.out.println("flag: 9");
+								if(flags)System.out.println("flag: 9");
 								if(deadServer(ip)){
 									doContinue = true;
 									continue;
 								}
 							} catch (RemoteException e) {
-								System.out.println("flag: 10");
+								if(flags)System.out.println("flag: 10");
 								if(deadServer(ip)){
 									doContinue = true;
 									continue;
 								}
 							} catch (NotBoundException e) {
-								System.out.println("flag: 11");
+								if(flags)System.out.println("flag: 11");
 								if(deadServer(ip)){
 									doContinue = true;
 									continue;
