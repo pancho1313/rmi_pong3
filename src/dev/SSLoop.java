@@ -153,17 +153,21 @@ public class SSLoop implements KeyListener {
 								System.out.println("flag: 7");
 								newServer = (IPongServer) Naming.lookup("//"+ip+":1099/PongServer");
 								servers.put(ip, newServer);
+								System.out.println("flag: 8");
 							} catch (MalformedURLException e) {
+								System.out.println("flag: 9");
 								if(deadServer(ip)){
 									doContinue = true;
 									continue;
 								}
 							} catch (RemoteException e) {
+								System.out.println("flag: 10");
 								if(deadServer(ip)){
 									doContinue = true;
 									continue;
 								}
 							} catch (NotBoundException e) {
+								System.out.println("flag: 11");
 								if(deadServer(ip)){
 									doContinue = true;
 									continue;

@@ -139,9 +139,11 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public boolean deadServer(String ip){
-		if(ip.equals(activeServer) && sServerState==OK){
-			U.localMessage("[SSLoop]:");
-			activeServerDown();
+		if(ip.equals(activeServer)){
+			if(sServerState==OK){
+				U.localMessage("[SSLoop]:");
+				activeServerDown();
+			}
 			return true;
 		}
 		
