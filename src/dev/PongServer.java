@@ -276,7 +276,7 @@ public class PongServer extends UnicastRemoteObject implements IPongServer{
 		}else{
 			lastPlayerRebound = playerId;
 		}
-		
+		U.localMessage("[refreshScores] {"+playersScore[0]+" "+playersScore[1]+" "+playersScore[2]+" "+playersScore[3]+"}");
 		for(int id = 0; id < players.length; id++){
 			IPlayer player = players[id];
 			if(player != null){
@@ -423,6 +423,7 @@ public class PongServer extends UnicastRemoteObject implements IPongServer{
 	}
 	
 	public Object[] getPongServerGeneralState() throws RemoteException{
+		U.localMessage("[getPongServerGeneralState] {"+playersScore[0]+" "+playersScore[1]+" "+playersScore[2]+" "+playersScore[3]+"}");
 		Object[] resp = new Object[7];
 		resp[0] = nPlayers;
 		resp[1] = winScore;
