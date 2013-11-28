@@ -188,8 +188,10 @@ public class Player extends UnicastRemoteObject implements IPlayer{
 	}
 	
 	public void startPause() throws RemoteException{
+		if(gameState != PAUSE){
 			prePauseGameState = gameState;
 			gameState = PAUSE;
+		}
 	}
 	public void endPause() throws RemoteException{
 		if(gameState == PAUSE){
