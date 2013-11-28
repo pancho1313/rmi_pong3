@@ -152,6 +152,7 @@ public class SSLoop implements KeyListener {
 							try {
 								System.out.println("flag: 7");
 								newServer = (IPongServer) Naming.lookup("//"+ip+":1099/PongServer");
+								newServer.getServerLoad();
 								servers.put(ip, newServer);
 								System.out.println("flag: 8");
 							} catch (MalformedURLException e) {
