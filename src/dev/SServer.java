@@ -142,7 +142,7 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 		if(ip.equals(activeServer) && sServerState==OK){
 			U.localMessage("[SSLoop]:");
 			activeServerDown();
-			return false;
+			return true;
 		}
 		
 		if(serversIp.remove(ip)){
@@ -150,7 +150,7 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 			refreshServers = true;
 			return true;
 		}
-		return false;
+		return true;
 	}
 	
 	public static void main(String[] args) {
