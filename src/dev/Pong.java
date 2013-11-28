@@ -661,7 +661,7 @@ public class Pong implements KeyListener {
 	private void serverDown(){
 		ISServer sServer;
 		 String ipSServer = myPlayer.sServerIp;
-		//contactar al SServer y obtener la ip del servidor activo
+		//contactar al SServer y reportar una falla en la comunicacion con el server
 			try {
 				sServer = (ISServer) Naming.lookup("//"+ipSServer+":1099/SServer");
 				sServer.serverDown();
