@@ -140,6 +140,7 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public boolean deadServer(String ip){
 		if(ip.equals(activeServer) && sServerState==OK){
+			U.localMessage("[SSLoop]:");
 			activeServerDown();
 			return false;
 		}
@@ -233,6 +234,7 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 
 	public void serverDown() throws RemoteException{
 		if(sServerState==OK){
+			U.localMessage("[Pong]: ");
 			activeServerDown();
 		}
 	}
