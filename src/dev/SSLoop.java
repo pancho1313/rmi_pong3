@@ -106,20 +106,25 @@ public class SSLoop implements KeyListener {
 					Iterator<String> keySetIterator = servers.keySet().iterator();
 					while(keySetIterator.hasNext()){
 					  String ip = keySetIterator.next();
-					  IPongServer server = servers.get(ip);  
+					  IPongServer server = servers.get(ip);
+					  System.out.print("flag: "+ip);
 					  if(server != null){
+						  System.out.print("flag: 1");
 						  double load = -1;
 						  try {
+							  System.out.print("flag: 2");
 							load = server.getServerLoad();
 							if(ip.equals(sServer.activeServer)){
 								// actualizar estado del server activo para respaldo y recuperacion...
 								sServer.refreshGeneralState(server.getPongServerGeneralState());
-								
+								System.out.print("flag: 3");
 								if(sServer.sServerState==SServer.SERVER_DOWN){
+									System.out.print("flag: 4");
 									sServer.habemusPongServer();
 								}
 							}
 						} catch (RemoteException e) {
+							System.out.print("flag: 5");
 							// si no responde (hizo ctrl+c) --> informar su fallecimiento --> deadServer(String ip)
 							if(deadServer(ip)){
 								doContinue = true;
@@ -142,8 +147,10 @@ public class SSLoop implements KeyListener {
 						  info_ip.add(ip);
 						  
 					  }else{
+						  System.out.print("flag: 6");
 						  IPongServer newServer;
 							try {
+								System.out.print("flag: 7");
 								newServer = (IPongServer) Naming.lookup("//"+ip+":1099/PongServer");
 								servers.put(ip, newServer);
 							} catch (MalformedURLException e) {
