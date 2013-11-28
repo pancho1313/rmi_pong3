@@ -275,6 +275,10 @@ public class SSLoop implements KeyListener {
 	 
 	 private boolean deadServer(String ip){
 		 System.out.println("dead server ip = "+ip);
+
+		 //eliminar el server del hashmap
+		 servers.put(ip, null);
+		 
 		 //informar el fallecimiento de un server (no responde)
 		 return sServer.deadServer(ip);
 	 }
