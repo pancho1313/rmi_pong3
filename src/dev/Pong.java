@@ -115,7 +115,9 @@ public class Pong implements KeyListener {
 			@Override
 			public void run(){
 				while (myPlayer.showPlayerInterface() && !suicide){
-					
+					//verificar si el server ha migrado
+			        refreshServerIp();
+			        
 					/* decidir que hacer segun el estado del juego */
 					int state = myPlayer.getGameState();
 			        switch (state) {
@@ -154,8 +156,7 @@ public class Pong implements KeyListener {
 			        //procesar el input del usuario
 			        userKeys(state);
 			        
-			        //verificar si el server ha migrado
-			        refreshServerIp();
+			        
 			        
 					//repintar el canvas
 					canvas.gameState = state;

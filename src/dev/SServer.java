@@ -200,6 +200,7 @@ public class SServer extends UnicastRemoteObject implements ISServer{
 			IPlayer player = players[id];
 			if(player != null){
 				try {
+					player.refreshServerIp(activeServer);
 					player.endPause();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
